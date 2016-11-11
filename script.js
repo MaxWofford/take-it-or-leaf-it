@@ -85,12 +85,17 @@ class Point {
 
 let main = function() {
   let ctx = document.querySelector('canvas').getContext('2d')
-  ctx.translate(ctx.canvas.width / 2, ctx.canvas.height)
-  ctx.rotate(-90 * Math.PI / 180)
+  ctx.translate(ctx.canvas.width / 2, ctx.canvas.height - unit)
   ctx.strokeStyle = FOREGROUND
+  ctx.fillStyle = FOREGROUND
   ctx.lineWidth = 1
 
+  // Print seed value
+  ctx.textAlign = 'center'
+  ctx.fillText(`Seed: ${seed}`, 0, unit)
+
   // Let's have 5 trees for a demo
+  ctx.rotate(-90 * Math.PI / 180)
   let trees = [new Branch(new Point, null, 0)]
   for (let i = 1; i < 3; i++) {
     trees.push(new Branch(new Point(0, i * unit), null, 0))
