@@ -1,4 +1,3 @@
-// Based on http://www.pixelbox.com/circuitflora/
 'use strict'
 
 const SEED_CONST = 10000
