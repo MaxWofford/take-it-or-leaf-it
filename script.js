@@ -2,6 +2,8 @@
 'use strict'
 
 const SEED_CONST = 10000
+const BACKGROUND = '#2c3e50' // inline styled for now
+const FOREGROUND = '#bdc3c7'
 
 let seed = Math.ceil(Math.random() * 1000);
 
@@ -71,7 +73,7 @@ class Point {
 
 let main = function() {
   let ctx = document.querySelector('canvas').getContext('2d')
-  ctx.strokeStyle = 'white'
+  ctx.strokeStyle = FOREGROUND
   ctx.lineWidth = 2
   let tree = new Branch(new Point(0, ctx.canvas.height/2), 0)
   tree.grow()
