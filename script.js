@@ -29,9 +29,15 @@ let sample = function(arr) {
   return arr[Math.floor(random() * arr.length)]
 }
 
-let calc_position = function(point, distance, angle) {
-  let x = Math.round(Math.cos(angle * Math.PI / 180) * distance + point.x)
-  let y = Math.round(Math.sin(angle * Math.PI / 180) * distance + point.y)
+let calc_position = function(point, distance, angle, round=true) {
+  let x = Math.cos(angle * Math.PI / 180) * distance + point.x
+  let y = Math.sin(angle * Math.PI / 180) * distance + point.y
+
+  if (round) {
+    x = Math.round(x)
+    y = Math.round(y)
+  }
+
   return new Point(x, y)
 }
 
@@ -39,18 +45,17 @@ let calc_position = function(point, distance, angle) {
 
 class Branch {
   constructor(start_point=new Point, parent=null, angle=null) {
-    let length = sample(range(1,10)) * unit
+    this.length = sample(range(1,10)) * unit
     let valid_angles = [-90, -45, 0, 45, 90].filter(x => {
       if (parent && parent.angle != null) {
-        let result = x != parent.angle // new branch doesn't have the same angle as the previous branch
-        result *= x != -parent.angle // new branch doesn't loop back on itself
-        return result
+        // Each branch should be a new degree from the last
+        return Math.abs(x) != Math.abs(parent.angle)
       }
     })
 
     this.angle = (angle === null ? sample(valid_angles) : angle)
     this.start_point = start_point
-    this.end_point = calc_position(start_point, length, this.angle)
+    this.end_point = calc_position(start_point, this.length, this.angle)
     this.children = []
     this.parent = parent
   }
@@ -67,12 +72,25 @@ class Branch {
   }
 
   draw(ctx) {
-    ctx.moveTo(this.start_point.x, this.start_point.y)
-    ctx.lineTo(this.end_point.x, this.end_point.y)
-    this.children.map(child => { child.draw(ctx) })
-    if (this.children.length === 0) {
+    let frames = this.length
+    let i = frames
+    let current_point = this.start_point
+
+    let intervalID = setInterval(() => {
+      let next_point = calc_position(current_point, this.length / frames, this.angle, false)
+
+      ctx.moveTo(current_point.x, current_point.y)
+      ctx.lineTo(next_point.x, next_point.y)
       ctx.stroke()
-    }
+
+      current_point = next_point
+      i--
+
+      if (i < 1) {
+        clearInterval(intervalID)
+        this.children.map(child => { child.draw(ctx) })
+      }
+    }, 20)
   }
 }
 
