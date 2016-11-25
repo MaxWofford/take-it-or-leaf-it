@@ -4,8 +4,22 @@ const SEED_CONST = 10000
 const BACKGROUND = '#2c3e50' // inline styled for now
 const FOREGROUND = '#bdc3c7'
 
-let seed = Math.ceil(Math.random() * 1000)
+document.querySelector('.seed-input').value = Math.ceil(Math.random() * 1000)
 let unit = 10
+let seed
+let start_seed
+
+let timeoutId
+let checkKeyPress = function(e) {
+  // Run main if user presses enter
+  if (e.keyCode == 13)
+    main()
+  else {
+    // Set a timeout to call main after a second
+    clearTimeout(timeoutId)
+    timeoutId = setTimeout(main, 1000)
+  }
+}
 
 // http://stackoverflow.com/a/19303725/4018167
 let random = function() {
@@ -102,15 +116,30 @@ class Point {
 }
 
 let main = function() {
-  let ctx = document.querySelector('canvas').getContext('2d')
+  if (start_seed == Math.round(document.querySelector('.seed-input').value)) {
+    return
+  }
+  // Set the seed
+  seed = Math.round(document.querySelector('.seed-input').value);
+  start_seed = seed
+
+  // Get the container and empty it out
+  let container = document.querySelector('.canvas-container')
+  container.innerHTML = ''
+
+  // Create a new canvas to put in the container
+  let canvas = document.createElement('canvas')
+  container.appendChild(canvas)
+
+  // Initialize the canvas' styles
+  let ctx = canvas.getContext('2d')
+  ctx.canvas.width  = window.innerWidth
+  ctx.canvas.height = window.innerHeight
+  unit = Math.min(ctx.canvas.width, ctx.canvas.height) / 50
   ctx.translate(ctx.canvas.width / 2, ctx.canvas.height - unit)
   ctx.strokeStyle = FOREGROUND
   ctx.fillStyle = FOREGROUND
   ctx.lineWidth = 1
-
-  // Print seed value
-  ctx.textAlign = 'center'
-  ctx.fillText(`Seed: ${seed}`, 0, unit)
 
   // Let's have 5 trees for a demo
   ctx.rotate(-90 * Math.PI / 180)
