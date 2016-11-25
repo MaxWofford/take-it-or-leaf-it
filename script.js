@@ -115,8 +115,8 @@ class Point {
   }
 }
 
-let main = function() {
-  if (start_seed == Math.round(document.querySelector('.seed-input').value)) {
+let main = function(forceFlag=false) {
+  if (!forceFlag && start_seed == Math.round(document.querySelector('.seed-input').value)) {
     return
   }
   // Set the seed
@@ -153,5 +153,7 @@ let main = function() {
     tree.draw(ctx)
   })
 }
+
+window.onresize = (e) => { main(true) }
 
 main()
