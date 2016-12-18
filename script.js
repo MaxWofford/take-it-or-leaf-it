@@ -1,6 +1,7 @@
 'use strict'
 
 const SEED_CONST = 10000
+const MAX_TREES = 10
 const BACKGROUND = '#2c3e50' // inline styled for now
 const FOREGROUND = '#bdc3c7'
 
@@ -141,10 +142,12 @@ let main = function(forceFlag=false) {
   ctx.fillStyle = FOREGROUND
   ctx.lineWidth = 1
 
-  // Let's have 5 trees for a demo
   ctx.rotate(-90 * Math.PI / 180)
+
+  // This operation gives us an odd number of trees every time
+  let treeNum = Math.round(random() * MAX_TREES / 2)
   let trees = [new Branch(new Point, null, 0)]
-  for (let i = 1; i < 3; i++) {
+  for (let i = 1; i < treeNum; i++) {
     trees.push(new Branch(new Point(0, i * unit), null, 0))
     trees.push(new Branch(new Point(0, -i * unit), null, 0))
   }
